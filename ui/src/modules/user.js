@@ -4,6 +4,7 @@ import UserSvc from '@/services/user'
 const nickname = localStorage.getItem('nickname')
 
 const state = {
+  error: null,
   loading: false,
   nickname: nickname || null
 }
@@ -21,19 +22,20 @@ const actions = {
 
         if (existingUser !== null) {
           localStorage.setItem('nickname', existingUser.nickname)
-          commit('setNickname', existingUser.nickname)
+          commit('doSettingNicknameSuccess', existingUser.nickname)
           return resolve(existingUser)
         }
 
-        // const newUser = await client.mutate({
-        //   mutation: UserSvc.createUserWithNickname,
-        //   variables: { nickname }
-        // }).then((resp) => resp.data.createUser)
-        //
-        // localStorage.setItem('nickname', existingUser.nickname)
-        // commit('setNickname', newUser)
-        // resolve(newUser.data.user)
+        const newUser = await client.mutate({
+          mutation: UserSvc.createUserWithNickname,
+          variables: { nickname }
+        }).then((resp) => resp.data.createUser)
+
+        localStorage.setItem('nickname', newUser.nickname)
+        commit('doSettingNicknameSuccess', newUser)
+        resolve(newUser)
       } catch (e) {
+        commit('doSettingNicknameError', e.message)
         reject(new Error(e.message))
       }
     })
@@ -41,7 +43,18 @@ const actions = {
 }
 
 const mutations = {
-  setNickname (state, nickname) {
+  doSettingNickname (state) {
+    state.error = null
+    state.loading = true
+  },
+
+  doSettingNicknameFailed (state, error) {
+    state.error = error
+    state.loading = false
+  },
+
+  doSettingNicknameSuccees (state, nickname) {
+    state.loading = false
     state.nickname = nickname
   }
 }
