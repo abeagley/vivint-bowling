@@ -1,21 +1,35 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
+
+// Containers
+import AppLayout from './pages/layout/AppLayout'
+import SetNickname from './pages/users/SetNickname'
 
 Vue.use(Router)
+
+export const validateUser = (_to, _from, next) => (localStorage.getItem('nickname')) ? next() : next('/')
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'Set Nickname',
+      component: SetNickname
     },
     {
-      path: '/about',
-      name: 'about',
-      component: About
+      path: '/app',
+      component: AppLayout,
+      beforeEnter: validateUser,
+      children: [
+        {
+          path: '',
+          redirectTo: { name: 'Games List' }
+        },
+        {
+          path: 'games',
+          name: 'Games List'
+        }
+      ]
     }
   ]
 })

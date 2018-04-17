@@ -12,6 +12,7 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
+  setupFiles: ['jest-localstorage-mock', 'inject-loader'],
   snapshotSerializers: [
     'jest-serializer-vue'
   ]
