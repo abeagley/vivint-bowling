@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 // Containers
 import AppLayout from './pages/layout/AppLayout'
+import GameList from './pages/games/GameList'
 import SetNickname from './pages/users/SetNickname'
 
 Vue.use(Router)
@@ -27,6 +28,7 @@ export default new Router({
         },
         {
           path: 'games',
+          component: GameList,
           name: 'Game List'
         }
       ]
