@@ -16,7 +16,25 @@ export default {
         }
       }) {
         id
+        users {
+          id
+        }
       }
     }
+  `,
+
+  createdGameSubscription: gql`
+    subscription CreatedGameSub {
+      game(where: {
+        mutation_in: CREATED
+      }) {
+        node {
+          id
+          users {
+            id
+          }
+        }
+      }
+    }   
   `
 }

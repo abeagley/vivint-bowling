@@ -19,13 +19,35 @@
 </template>
 
 <script>
+import client from '@/client'
+import GameSvc from '@/services/game'
 import Table from '@/pages/layout/components/Table'
 
 export default {
   components: { Table },
 
+  beforeMount () {
+    this.subscription = client.subscribe({
+      subscription: GameSvc.createdGameSubscription
+    }).subscribe({
+      next: this.handleNewGame,
+      error: this.handleNewGameError
+    })
+  },
+
+  methods: {
+    handleNewGame (game) {
+      console.log('NEW GAME', game)
+    },
+
+    handleNewGameError (err) {
+      console.log('NEW GAME ERROR', err)
+    }
+  },
+
   data () {
     return {
+      subscription: null,
       tableColumns: [
         {
           prop: 'name',
