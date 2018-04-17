@@ -1,0 +1,5 @@
+service: vivint-bowling
+stage: dev
+datamodel: datamodel.graphql
+disableAuth: true
+cluster: local

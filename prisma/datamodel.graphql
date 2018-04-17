@@ -1,0 +1,33 @@
+type Game {
+  createdAt: DateTime!
+  id: ID! @unique
+  scoreSheets: [ScoreSheet!]! @relation(name: "ScoreSheetsForGame")
+  updatedAt: DateTime!
+  users: [User!]! @relation(name: "GamesForUsers")
+}
+
+type Score {
+  createdAt: DateTime!
+  id: ID! @unique
+  pins: [Int!]!
+  scoreSheets: [ScoreSheet!]! @relation(name: "ScoresForScoreSheets")
+  updatedAt: DateTime!
+}
+
+type ScoreSheet {
+  createdAt: DateTime!
+  game: Game! @relation(name: "ScoreSheetsForGame")
+  id: ID! @unique
+  scores: [Score!]! @relation(name: "ScoresForScoreSheets")
+  updatedAt: DateTime!
+  user: User! @relation(name: "ScoreSheetsForUser")
+}
+
+type User {
+  createdAt: DateTime!
+  games: [Game!]! @relation(name: "GamesForUsers")
+  id: ID! @unique
+  nickname: String! @unique
+  scoreSheets: [ScoreSheet!]! @relation(name: "ScoreSheetsForUser")
+  updatedAt: DateTime!
+}
