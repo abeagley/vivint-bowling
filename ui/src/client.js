@@ -6,11 +6,11 @@ import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3020/graphql'
+  uri: 'http://localhost:4466/vivint-bowling/dev'
 })
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:3000/subscriptions',
+  uri: 'ws://localhost:4466/vivint-bowling/dev',
   options: {
     reconnect: true
   }

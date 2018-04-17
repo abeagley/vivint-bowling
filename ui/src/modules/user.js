@@ -4,6 +4,7 @@ import UserSvc from '@/services/user'
 const nickname = localStorage.getItem('nickname')
 
 const state = {
+  loading: false,
   nickname: nickname || null
 }
 
@@ -24,14 +25,14 @@ const actions = {
           return resolve(existingUser)
         }
 
-        const newUser = await client.mutate({
-          mutation: UserSvc.createUserWithNickname,
-          variables: { nickname }
-        }).then((resp) => resp.data.createUser)
-
-        localStorage.setItem('nickname', existingUser.nickname)
-        commit('setNickname', newUser)
-        resolve(newUser.data.user)
+        // const newUser = await client.mutate({
+        //   mutation: UserSvc.createUserWithNickname,
+        //   variables: { nickname }
+        // }).then((resp) => resp.data.createUser)
+        //
+        // localStorage.setItem('nickname', existingUser.nickname)
+        // commit('setNickname', newUser)
+        // resolve(newUser.data.user)
       } catch (e) {
         reject(new Error(e.message))
       }

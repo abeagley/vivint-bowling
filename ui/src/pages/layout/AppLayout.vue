@@ -1,12 +1,28 @@
 <template>
+  <div class="layout-container">
+    <Header/>
+    <div class="main-content" ref="scrollContainer">
+      <transition name="slide-left">
+        <router-view/>
+      </transition>
+    </div>
+  </div>
 </template>
 
 <script>
-export default {
+import Header from './components/Header'
+import ScrollY from '../../mixins/scroll-y'
 
+export default {
+  components: { Header },
+  mixins: [ ScrollY ]
 }
 </script>
 
 <style lang="scss">
-
+.main-content {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
 </style>

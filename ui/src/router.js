@@ -23,11 +23,11 @@ export default new Router({
       children: [
         {
           path: '',
-          redirectTo: { name: 'Games List' }
+          redirectTo: { name: 'Game List' }
         },
         {
           path: 'games',
-          name: 'Games List'
+          name: 'Game List'
         }
       ]
     }
