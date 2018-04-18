@@ -12,6 +12,7 @@ Vue.use(Router)
 export const validateUser = (_to, _from, next) => (localStorage.getItem('nickname')) ? next() : next('/')
 
 export default new Router({
+  linkActiveClass: 'active',
   routes: [
     {
       path: '/',

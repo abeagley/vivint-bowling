@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="row no-gutters">
-      <div class="col text-center tally-score">0</div>
+      <div class="col text-center tally-score">{{calculatedTally}}</div>
     </div>
   </div>
 </template>
@@ -52,7 +52,11 @@ import { mapFields } from 'vee-validate'
 
 export default {
   computed: {
-    ...mapFields(['attemptOne', 'attemptTwo', 'finalAttempt'])
+    ...mapFields(['attemptOne', 'attemptTwo', 'finalAttempt']),
+
+    calculatedTally () {
+      return this.scoreSheet.scoreResults[this.scoreIndex]
+    }
   },
 
   data () {

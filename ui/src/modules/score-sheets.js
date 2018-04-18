@@ -88,9 +88,9 @@ const mutations = {
         return sheet
       }
 
-      return Object.assign({}, sheet, {
+      return new ScoreSheet(Object.assign({}, sheet, {
         scores: sheet.scores.map((score) => (score.round === data.score.round) ? data.score : score)
-      })
+      }))
     })
     state.updating = false
   }

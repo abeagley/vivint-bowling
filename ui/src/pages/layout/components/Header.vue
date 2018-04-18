@@ -32,8 +32,15 @@ export default {
 
 .col.text-right {
   a {
+    color: #CCC;
     display: inline-block;
     padding: 0 0.8rem;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    &.active {
+      color: darken(#CCC, 25%);
+    }
   }
 }
 </style>

@@ -1,8 +1,8 @@
 export default class Score {
   constructor (params = {
-    attemptOne: null,
-    attemptTwo: null,
-    finalAttempt: null,
+    attemptOne: 0,
+    attemptTwo: 0,
+    finalAttempt: 0,
     id: null,
     round: 0
   }) {
