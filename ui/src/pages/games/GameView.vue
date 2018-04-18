@@ -24,8 +24,10 @@
 </template>
 
 <script>
+import client from '@/client'
+import ScoreSheetSvc from '@/services/score-sheet'
 import ScoreItem from './components/ScoreItem'
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import Table from '@/pages/layout/components/Table'
 
 export default {
@@ -39,12 +41,24 @@ export default {
     scoreSheets: state => state.scoreSheets.data
   }),
 
+  beforeMount () {
+    const changeSub = client.subscribe({
+      query: ScoreSheetSvc.subscribeToScoreUpdates
+    })
+
+    this.scoreChanges = changeSub.subscribe({
+      next: this.handleScoreChange,
+      error: this.handleScoreChangeError
+    })
+  },
+
   beforeRouteEnter (to, from, next) {
     next(vm => vm.fetchGame(vm.routeParams.id))
   },
 
   data () {
     return {
+      scoreChanges: null,
       tableColumns: [{
         label: 'Name',
         prop: 'user.nickname'
@@ -57,6 +71,10 @@ export default {
       'createScore',
       'fetchGame',
       'updateScore'
+    ]),
+
+    ...mapMutations([
+      'doCreateUpdateScoreSuccess'
     ]),
 
     // Debounce this eventually
@@ -73,6 +91,25 @@ export default {
       } catch (e) {
         alert(`Error Updating/Creating Score: ${e.message}`)
       }
+    },
+
+    handleScoreChange (resp) {
+      const score = resp.data.score.node
+      const scoreSheetId = score.scoreSheet.id
+      const gameId = score.scoreSheet.game.id
+
+      if (gameId !== this.routeParams.id) {
+        return
+      }
+
+      this.doCreateUpdateScoreSuccess({
+        scoreSheet: { id: scoreSheetId },
+        score: score
+      })
+    },
+
+    handleScoreChangeError (e) {
+      alert(`Error Updating/Creating Score Sub: ${e.message}`)
     }
   }
 }

@@ -8,7 +8,7 @@ export default {
         attemptTwo: $attemptTwo
         finalAttempt: $finalAttempt
         round: $round
-        scoreSheets: {
+        scoreSheet: {
           connect: {
             id: $scoreSheetId
           }
@@ -37,6 +37,29 @@ export default {
         finalAttempt
         id
         round
+      }
+    }
+  `,
+
+  // This is a really expensive subscription - a custom one would be much better on-top of the Prisma API
+  subscribeToScoreUpdates: gql`
+    subscription {
+      score(where: {
+        mutation_in: [CREATED, UPDATED]
+      }) {
+        node {
+          attemptOne
+          attemptTwo
+          finalAttempt
+          id
+          round
+          scoreSheet {
+            id
+            game {
+              id
+            }
+          }
+        }
       }
     }
   `

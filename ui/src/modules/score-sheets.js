@@ -26,7 +26,6 @@ const actions = {
           }
         })
 
-        commit('doCreateUpdateScoreSuccess', { scoreSheet: data.scoreSheet, scoreIndex: data.scoreIndex, score })
         resolve(score)
       } catch (e) {
         commit('doCreateScoreFailed', e.message)
@@ -46,8 +45,7 @@ const actions = {
           variables: data.scoreData
         })
 
-        commit('doCreateUpdateScoreSuccess', { scoreSheet: data.scoreSheet, scoreIndex: data.scoreIndex, score })
-        resolve(null)
+        resolve(score)
       } catch (e) {
         commit('doUpdateScoreFailed', e.message)
         reject(new Error(e.message))
@@ -91,7 +89,7 @@ const mutations = {
       }
 
       return Object.assign({}, sheet, {
-        scores: sheet.scores.map((score, idx) => (idx === data.scoreIndex) ? data.score : score)
+        scores: sheet.scores.map((score) => (score.round === data.score.round) ? data.score : score)
       })
     })
     state.updating = false

@@ -8,7 +8,6 @@
                  max="10"
                  min="0"
                  placeholder="-"
-                 data-vv-delay="1000"
                  @change="checkChanges('attemptOne')"
                  v-validate="modelValidations.attempt"
                  v-model="model.attemptOne"
@@ -22,7 +21,7 @@
                  max="10"
                  min="0"
                  placeholder="-"
-                 data-vv-delay="1000"
+                 @change="checkChanges('attemptTwo')"
                  v-validate="modelValidations.attempt"
                  v-model="model.attemptTwo"
                  class="form-control"/>
@@ -35,7 +34,7 @@
                  max="10"
                  min="0"
                  placeholder="-"
-                 data-vv-delay="1000"
+                 @change="checkChanges('finalAttempt')"
                  v-validate="modelValidations.attempt"
                  v-model="model.finalAttempt"
                  class="form-control"/>
@@ -103,6 +102,17 @@ export default {
     scoreIndex: {
       required: true,
       type: Number
+    }
+  },
+
+  watch: {
+    scoreSheet (val, _old) {
+      // Let the battle of the packets commence
+      this.model = {
+        attemptOne: val.scores[this.scoreIndex].attemptOne,
+        attemptTwo: val.scores[this.scoreIndex].attemptTwo,
+        finalAttempt: val.scores[this.scoreIndex].finalAttempt
+      }
     }
   }
 }

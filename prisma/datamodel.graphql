@@ -6,7 +6,8 @@ type Game {
   users: [User!]! @relation(name: "GamesForUsers")
 }
 
-# This is more to show off the awesomeness of graphql. I would do something different in an actual production database.
+# This is more to show off the awesomeness of graphql / cyclical dependencies. I would do something different in an
+# actual production database.
 type Score {
   createdAt: DateTime!
   id: ID! @unique
@@ -14,7 +15,7 @@ type Score {
   attemptTwo: Int
   finalAttempt: Int
   round: Int!
-  scoreSheets: [ScoreSheet!]! @relation(name: "ScoresForScoreSheets")
+  scoreSheet: ScoreSheet! @relation(name: "ScoresForScoreSheet")
   updatedAt: DateTime!
 }
 
@@ -22,7 +23,7 @@ type ScoreSheet {
   createdAt: DateTime!
   game: Game! @relation(name: "ScoreSheetsForGame")
   id: ID! @unique
-  scores: [Score!]! @relation(name: "ScoresForScoreSheets", onDelete: CASCADE)
+  scores: [Score!]! @relation(name: "ScoresForScoreSheet", onDelete: CASCADE)
   updatedAt: DateTime!
   user: User! @relation(name: "ScoreSheetsForUser")
 }
