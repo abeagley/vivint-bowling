@@ -7,6 +7,7 @@ export default class ScoreSheet {
     }
 
     this.user = scoreSheetData.user
+    this.id = scoreSheetData.id
     this.scores = this._fillNodes(scoreSheetData.scores)
   }
 
@@ -18,14 +19,12 @@ export default class ScoreSheet {
     let data = []
 
     if (existing.length > 0) {
-      data = existing.map((score, idx) => {
-        this[`node${score.round}`] = new Score(score)
+      data = existing.map((score) => {
+        return new Score(score)
       })
     }
 
-    const iterations = 10 - data.length
-
-    for (let i = (iterations === 10 ? 1 : data.length); i <= iterations; i++) {
+    for (let i = (data.length + 1); i <= 10; i++) {
       data.push(new Score({
         attemptOne: null,
         attemptTwo: null,
@@ -34,8 +33,6 @@ export default class ScoreSheet {
         round: i
       }))
     }
-
-    console.log(data)
 
     return data
   }

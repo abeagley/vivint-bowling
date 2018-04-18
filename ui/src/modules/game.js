@@ -20,6 +20,7 @@ const actions = {
         }).then((resp) => resp.data.game)
 
         commit('doFetchGameSuccess', game)
+        commit('setSheets', game.scoreSheets)
         resolve(game)
       } catch (e) {
         commit('doFetchGameFailed', e.message)

@@ -5,7 +5,11 @@
         <div class="form-group mb-0">
           <input type="number"
                  name="attemptOne"
+                 max="10"
+                 min="0"
                  placeholder="-"
+                 data-vv-delay="1000"
+                 @change="checkChanges('attemptOne')"
                  v-validate="modelValidations.attempt"
                  v-model="model.attemptOne"
                  class="form-control"/>
@@ -15,9 +19,25 @@
         <div class="form-group mb-0">
           <input type="number"
                  name="attemptTwo"
+                 max="10"
+                 min="0"
                  placeholder="-"
+                 data-vv-delay="1000"
                  v-validate="modelValidations.attempt"
                  v-model="model.attemptTwo"
+                 class="form-control"/>
+        </div>
+      </div>
+      <div class="col" v-if="scoreIndex === 9">
+        <div class="form-group mb-0">
+          <input type="number"
+                 name="finalAttempt"
+                 max="10"
+                 min="0"
+                 placeholder="-"
+                 data-vv-delay="1000"
+                 v-validate="modelValidations.attempt"
+                 v-model="model.finalAttempt"
                  class="form-control"/>
         </div>
       </div>
@@ -33,14 +53,15 @@ import { mapFields } from 'vee-validate'
 
 export default {
   computed: {
-    ...mapFields(['attemptOne', 'attemptTwo'])
+    ...mapFields(['attemptOne', 'attemptTwo', 'finalAttempt'])
   },
 
   data () {
     return {
       model: {
         attemptOne: this.scoreSheet.scores[this.scoreIndex].attemptOne,
-        attemptTwo: this.scoreSheet.scores[this.scoreIndex].attemptTwo
+        attemptTwo: this.scoreSheet.scores[this.scoreIndex].attemptTwo,
+        finalAttempt: this.scoreSheet.scores[this.scoreIndex].finalAttempt
       },
 
       modelValidations: {
@@ -54,7 +75,26 @@ export default {
     }
   },
 
+  methods: {
+    async checkChanges (propName) {
+      const result = await this.$validator.validate(propName, this.model[propName])
+
+      if (!result) {
+        return
+      }
+
+      this.onUpdateScore(this.scoreSheet, this.scoreIndex, Object.assign({}, this.scoreSheet.scores[this.scoreIndex], {
+        [propName]: parseInt(this.model[propName], 10)
+      }))
+    }
+  },
+
   props: {
+    onUpdateScore: {
+      required: true,
+      type: Function
+    },
+
     scoreSheet: {
       required: true,
       type: Object
