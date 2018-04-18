@@ -35,6 +35,9 @@ const actions = {
 
         const games = await client.query({
           query: GameSvc.listGames
+        }, {
+          // Apollo client comes with a built in caching framework. This forces a network refresh.
+          fetchPolicy: 'network-only'
         }).then((resp) => resp.data.games)
 
         commit('doFetchGamesSuccess', games)

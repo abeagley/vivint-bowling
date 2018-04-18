@@ -15,7 +15,9 @@
           <el-table-column :width="100"
                            label=" ">
             <template slot-scope="props">
-              <button class="btn btn-small btn-info" @click="handleGameAction(props.row)">{{getActionText(props.row)}}</button>
+              <button class="btn btn-small btn-info w-100" @click="handleGameAction(props.row)">
+                {{getActionText(props.row)}}
+              </button>
             </template>
           </el-table-column>
         </Table>

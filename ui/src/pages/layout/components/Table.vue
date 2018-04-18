@@ -3,7 +3,7 @@
     <div class="card-header">
       {{title}}
     </div>
-    <div class="card-body no-gutters">
+    <div class="card-body p-0 m-0">
       <div class="row">
         <div class="col datatable-main">
           <el-table class="table-striped"
@@ -60,11 +60,7 @@ export default {
   width: 100% !important;
 }
 
-.datatable-top, .datatable-main {
+.datatable-top {
   margin-bottom: 1.5rem;
-}
-
-.card-header {
-  margin-bottom: 1rem;
 }
 </style>

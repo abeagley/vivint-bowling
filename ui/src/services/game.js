@@ -1,8 +1,11 @@
 import gql from 'graphql-tag'
 
 /*
-  This is just for demonstration only and Prisma is built to be like a GraphQL API in front of your database.
-  This wouldn't be a safe operation in any kind of client facing app as you would be able to specify any nickname.
+  This is just for demonstration only and Prisma is built to be like a GraphQL API in front of your database. This
+  wouldn't be a safe operation in any kind of client facing app as you would be able to specify any nickname.
+
+  We also don't get the benefit of custom resolvers by hitting the Prisma API directly so we lose all sorts of
+  validation.
 */
 
 export default {
@@ -12,6 +15,15 @@ export default {
         users: {
           connect: {
             nickname: $nickname
+          }
+        },
+        scoreSheets: {
+          create: {
+            user: {
+              connect: {
+                nickname: $nickname
+              }
+            }
           }
         }
       }) {
@@ -37,6 +49,29 @@ export default {
         }
       }
     }   
+  `,
+
+  fetchGame: gql`
+    query FetchGame($id: ID!) {
+      game(where: {
+        id: $id
+      }) {
+        id
+        scoreSheets {
+          id
+          scores(orderBy: round_ASC) {
+            attemptOne
+            attemptTwo
+            id
+            round
+          }
+          user {
+            id
+            nickname
+          }
+        }
+      }
+    }
   `,
 
   listGames: gql`

@@ -5,6 +5,10 @@
         <img src="https://images.vivintcdn.com/global/vivint.com/global/logos/vivint/vivint-logo-primary-r.svg"
              width="219" height="24">
       </div>
+      <div class="col text-right">
+        <router-link :to="{ name: 'Game List' }">Games</router-link>
+        <a href="#">Logout</a>
+      </div>
     </div>
   </div>
 </template>
@@ -13,5 +17,12 @@
 .top-nav, .top-nav .row  {
   background-color: #FFF;
   height: 60px;
+}
+
+.col.text-right {
+  a {
+    display: inline-block;
+    padding: 0 0.8rem;
+  }
 }
 </style>
