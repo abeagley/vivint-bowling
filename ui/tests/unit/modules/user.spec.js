@@ -8,7 +8,7 @@ describe('Vuex: User Module', () => {
 
   it ('Mutation #setNickname: Should commit an action to set a nickname', () => {
     const state = { nickname: null }
-    module.mutations.setNickname(state, 'Joe')
+    module.mutations.doSettingNicknameSuccess(state, 'Joe')
     expect(state.nickname).toEqual('Joe')
   })
 
