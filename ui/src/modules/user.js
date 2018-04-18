@@ -13,12 +13,12 @@ const actions = {
   validateNickname ({ commit }, nickname) {
     return new Promise(async (resolve, reject) => {
       try {
+        commit('doSettingNickname')
+
         const existingUser = await client.query({
           query: UserSvc.checkForExistingUser,
           variables: { nickname }
         }).then((resp) => resp.data.user)
-
-        console.log(existingUser)
 
         if (existingUser !== null) {
           localStorage.setItem('nickname', existingUser.nickname)
@@ -35,7 +35,7 @@ const actions = {
         commit('doSettingNicknameSuccess', newUser)
         resolve(newUser)
       } catch (e) {
-        commit('doSettingNicknameError', e.message)
+        commit('doSettingNicknameFailed', e.message)
         reject(new Error(e.message))
       }
     })
@@ -53,7 +53,7 @@ const mutations = {
     state.loading = false
   },
 
-  doSettingNicknameSuccees (state, nickname) {
+  doSettingNicknameSuccess (state, nickname) {
     state.loading = false
     state.nickname = nickname
   }

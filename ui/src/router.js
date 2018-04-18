@@ -30,14 +30,12 @@ export default new Router({
         {
           path: 'games',
           component: GameList,
-          name: 'Game List',
-          children: [
-            {
-              path: ':id',
-              component: GameView,
-              name: 'Game View'
-            }
-          ]
+          name: 'Game List'
+        },
+        {
+          path: 'games/:id',
+          component: GameView,
+          name: 'Game View'
         }
       ]
     }

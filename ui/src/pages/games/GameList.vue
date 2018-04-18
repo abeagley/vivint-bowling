@@ -11,7 +11,14 @@
         <Table :loading="loading"
                :table-columns="tableColumns"
                :table-data="games"
-               title="Game List"/>
+               title="Game List">
+          <el-table-column :width="100"
+                           label=" ">
+            <template slot-scope="props">
+              <button class="btn btn-small btn-info" @click="handleGameAction(props.row)">{{getActionText(props.row)}}</button>
+            </template>
+          </el-table-column>
+        </Table>
       </div>
     </div>
   </div>
@@ -38,18 +45,16 @@ export default {
     this.newGameSub.unsubscribe()
   },
 
-  beforeCreate () {
-    this.newGameSub = client.subscribe({
+  beforeMount () {
+    const gqlSub = client.subscribe({
       query: GameSvc.createdGameSubscription
     })
 
-    this.newGameSub.subscribe({
+    this.newGameSub = gqlSub.subscribe({
       next: this.handleNewGame,
       error: this.handleNewGameError
     })
-  },
 
-  beforeMount () {
     this.fetchGames()
   },
 
@@ -63,12 +68,24 @@ export default {
       'addGameToList'
     ]),
 
+    getActionText (row) {
+      return (row.users.find(user => user.nickname === this.nickname)) ? 'VIEW' : 'JOIN'
+    },
+
     handleCreateGame () {
       this.createGame(this.nickname)
     },
 
+    handleGameAction (row) {
+      // Not very efficient as we've already checked this once. Eventually this would be a computed property per row.
+      if (this.getActionText(row) === 'VIEW') {
+        return this.$router.push({ name: 'Game View', params: { id: row.id } })
+      }
+
+      // Do add player
+    },
+
     handleNewGame (resp) {
-      console.log(resp)
       this.addGameToList(resp.data.game.node)
     },
 
