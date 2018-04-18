@@ -123,6 +123,7 @@ export default {
             scores(orderBy: round_ASC) {
               attemptOne
               attemptTwo
+              finalAttempt
               id
               round
             }

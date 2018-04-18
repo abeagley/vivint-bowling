@@ -52,4 +52,19 @@ a {
     transform: translate3d(0, 0, 0);
   }
 }
+
+// Table overrides for scoring
+.scoring {
+  .el-table td {
+    padding: 0.5rem 0;
+  }
+
+  .el-table td .cell {
+    padding: 0 0.5rem;
+
+    .form-control {
+      border-radius: 0;
+    }
+  }
+}
 </style>
