@@ -3,8 +3,9 @@ import GameSvc from '@/services/game'
 
 const state = {
   creating: false,
+  data: [],
   error: null,
-  games: []
+  loading: false
 }
 
 const actions = {
@@ -18,10 +19,28 @@ const actions = {
           variables: { nickname }
         }).then((resp) => resp.data.createGame)
 
-        commit('doCreateGameSuccess', newGame)
+        commit('doCreateGameSuccess')
         resolve(newGame)
       } catch (e) {
         commit('doCreateGameError', e.message)
+        reject(new Error(e.message))
+      }
+    })
+  },
+
+  fetchGames ({ commit }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        commit('doFetchGames')
+
+        const games = await client.query({
+          query: GameSvc.listGames
+        }).then((resp) => resp.data.games)
+
+        commit('doFetchGamesSuccess', games)
+        resolve(games)
+      } catch (e) {
+        commit('doFetchGamesError', e.message)
         reject(new Error(e.message))
       }
     })
@@ -29,6 +48,10 @@ const actions = {
 }
 
 const mutations = {
+  addGameToList (state, game) {
+    state.data = [ ...state.data, game ]
+  },
+
   doCreateGame (state) {
     state.creating = true
     state.error = null
@@ -39,9 +62,23 @@ const mutations = {
     state.error = error
   },
 
-  doCreateGameSuccess (state, game) {
+  doCreateGameSuccess (state) {
     state.creating = false
-    state.games = [ ...state.games, game ]
+  },
+
+  doFetchGames (state) {
+    state.loading = true
+    state.error = null
+  },
+
+  doFetchGamesError (state, error) {
+    state.loading = false
+    state.error = error
+  },
+
+  doFetchGamesSuccess (state, games) {
+    state.loading = false
+    state.data = games
   }
 }
 

@@ -3,14 +3,14 @@
   <div class="container-fluid">
     <div class="row mb-3">
       <div class="col text-right">
-        <button class="btn btn-primary">CREATE GAME</button>
+        <button class="btn btn-primary" @click="handleCreateGame">CREATE GAME</button>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <Table :loading="false"
+        <Table :loading="loading"
                :table-columns="tableColumns"
-               :table-data="[]"
+               :table-data="games"
                title="Game List"/>
       </div>
     </div>
@@ -22,44 +22,72 @@
 import client from '@/client'
 import GameSvc from '@/services/game'
 import Table from '@/pages/layout/components/Table'
+import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
   components: { Table },
 
-  beforeMount () {
-    this.subscription = client.subscribe({
-      subscription: GameSvc.createdGameSubscription
-    }).subscribe({
+  computed: mapState({
+    creating: state => state.games.creating,
+    games: state => state.games.data,
+    loading: state => state.games.loading,
+    nickname: state => state.user.nickname
+  }),
+
+  beforeDestroy () {
+    this.newGameSub.unsubscribe()
+  },
+
+  beforeCreate () {
+    this.newGameSub = client.subscribe({
+      query: GameSvc.createdGameSubscription
+    })
+
+    this.newGameSub.subscribe({
       next: this.handleNewGame,
       error: this.handleNewGameError
     })
   },
 
+  beforeMount () {
+    this.fetchGames()
+  },
+
   methods: {
-    handleNewGame (game) {
-      console.log('NEW GAME', game)
+    ...mapActions([
+      'createGame',
+      'fetchGames'
+    ]),
+
+    ...mapMutations([
+      'addGameToList'
+    ]),
+
+    handleCreateGame () {
+      this.createGame(this.nickname)
+    },
+
+    handleNewGame (resp) {
+      console.log(resp)
+      this.addGameToList(resp.data.game.node)
     },
 
     handleNewGameError (err) {
-      console.log('NEW GAME ERROR', err)
+      alert(`Error getting new game: ${err}`)
     }
   },
 
   data () {
     return {
-      subscription: null,
+      newGameSub: null,
       tableColumns: [
         {
-          prop: 'name',
+          prop: 'id',
           label: 'Name'
         },
         {
-          prop: 'url',
-          label: 'Url'
-        },
-        {
-          prop: 'createdAt',
-          label: 'Created'
+          prop: 'users.length',
+          label: 'Players'
         }
       ]
     }

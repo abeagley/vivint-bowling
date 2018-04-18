@@ -32,9 +32,22 @@ export default {
           id
           users {
             id
+            nickname
           }
         }
       }
     }   
+  `,
+
+  listGames: gql`
+    {
+      games {
+        id
+        users {
+          id
+          nickname
+        }
+      }
+    }
   `
 }
