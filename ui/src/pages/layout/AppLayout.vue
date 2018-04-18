@@ -1,6 +1,6 @@
 <template>
   <div class="layout-container">
-    <Header/>
+    <Header :on-logout="handleLogout"/>
     <div class="main-content" ref="scrollContainer">
       <transition name="slide-left">
         <router-view/>
@@ -15,7 +15,14 @@ import ScrollY from '../../mixins/scroll-y'
 
 export default {
   components: { Header },
-  mixins: [ ScrollY ]
+  mixins: [ ScrollY ],
+
+  methods: {
+    handleLogout () {
+      localStorage.clear()
+      window.location.reload()
+    }
+  }
 }
 </script>
 

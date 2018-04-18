@@ -74,6 +74,31 @@ export default {
     }
   `,
 
+  joinGame: gql`
+    mutation JoinGame($nickname: String!, $gameId: ID!) {
+      updateGame(where: {
+        id: $gameId
+      }, data: {
+        scoreSheets: {
+          create: {
+            user: {
+              connect: {
+                nickname: $nickname
+              }
+            }
+          }
+        }
+        users: {
+          connect: {
+            nickname: $nickname
+          }
+        }
+      }) {
+        id
+      }
+    }
+  `,
+
   listGames: gql`
     {
       games {
@@ -81,6 +106,35 @@ export default {
         users {
           id
           nickname
+        }
+      }
+    }
+  `,
+
+  updatedGameSubscription: gql`
+    subscription PlayerJoined {
+      game(where: {
+        mutation_in: UPDATED
+      }) {
+        node {
+          id
+          scoreSheets {
+            id
+            scores(orderBy: round_ASC) {
+              attemptOne
+              attemptTwo
+              id
+              round
+            }
+            user {
+              id
+              nickname
+            }
+          }
+          users {
+            id
+            nickname
+          }
         }
       }
     }

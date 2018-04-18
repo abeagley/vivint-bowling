@@ -15,7 +15,8 @@ const actions = {
 
         const game = await client.query({
           query: GameSvc.fetchGame,
-          variables: { id }
+          variables: { id },
+          fetchPolicy: 'network-only'
         }).then((resp) => resp.data.game)
 
         commit('doFetchGameSuccess', game)

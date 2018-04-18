@@ -7,11 +7,22 @@
       </div>
       <div class="col text-right">
         <router-link :to="{ name: 'Game List' }">Games</router-link>
-        <a href="#">Logout</a>
+        <a href="#" @click.prevent="onLogout">Logout</a>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    onLogout: {
+      required: true,
+      type: Function
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .top-nav, .top-nav .row  {

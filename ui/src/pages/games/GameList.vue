@@ -45,29 +45,60 @@ export default {
 
   beforeDestroy () {
     this.newGameSub.unsubscribe()
+    this.updatedGameSub.unsubscribe()
   },
 
   beforeMount () {
-    const gqlSub = client.subscribe({
+    const newSub = client.subscribe({
       query: GameSvc.createdGameSubscription
     })
 
-    this.newGameSub = gqlSub.subscribe({
+    const updateSub = client.subscribe({
+      query: GameSvc.updatedGameSubscription
+    })
+
+    this.newGameSub = newSub.subscribe({
       next: this.handleNewGame,
       error: this.handleNewGameError
     })
 
-    this.fetchGames()
+    this.updatedGameSub = updateSub.subscribe({
+      next: this.handleUpdatedGame,
+      error: this.handleUpdatedGameError
+    })
+  },
+
+  beforeRouteEnter (to, from, next) {
+    next(vm => vm.fetchGames())
+  },
+
+  data () {
+    return {
+      newGameSub: null,
+      updatedGameSub: null,
+      tableColumns: [
+        {
+          prop: 'id',
+          label: 'ID'
+        },
+        {
+          prop: 'users.length',
+          label: 'Players'
+        }
+      ]
+    }
   },
 
   methods: {
     ...mapActions([
       'createGame',
-      'fetchGames'
+      'fetchGames',
+      'joinGame'
     ]),
 
     ...mapMutations([
-      'addGameToList'
+      'addGameToList',
+      'updateGameInList'
     ]),
 
     getActionText (row) {
@@ -78,13 +109,19 @@ export default {
       this.createGame(this.nickname)
     },
 
-    handleGameAction (row) {
-      // Not very efficient as we've already checked this once. Eventually this would be a computed property per row.
-      if (this.getActionText(row) === 'VIEW') {
-        return this.$router.push({ name: 'Game View', params: { id: row.id } })
-      }
+    async handleGameAction (row) {
+      try {
+        // Not very efficient as we've already checked this once. Eventually this would be a computed property per row.
+        if (this.getActionText(row) === 'VIEW') {
+          return this.$router.push({ name: 'Game View', params: { id: row.id } })
+        }
 
-      // Do add player
+        await this.joinGame({ nickname: this.nickname, gameId: row.id })
+        this.$router.push({ name: 'Game View', params: { id: row.id } })
+        // Do add player
+      } catch (e) {
+        alert(`Error Joining/Viewing Game: ${e.message}`)
+      }
     },
 
     handleNewGame (resp) {
@@ -92,23 +129,16 @@ export default {
     },
 
     handleNewGameError (err) {
-      alert(`Error getting new game: ${err}`)
-    }
-  },
+      alert(`Error Getting New Game: ${err}`)
+    },
 
-  data () {
-    return {
-      newGameSub: null,
-      tableColumns: [
-        {
-          prop: 'id',
-          label: 'Name'
-        },
-        {
-          prop: 'users.length',
-          label: 'Players'
-        }
-      ]
+    handleUpdatedGame (resp) {
+      console.log(resp)
+      this.updateGameInList(resp.data.game.node)
+    },
+
+    handleUpdatedGameError (err) {
+      alert(`Error Updating Game: ${err}`)
     }
   }
 }

@@ -27,8 +27,8 @@ export default {
     routeParams: state => state.route.params
   }),
 
-  beforeMount () {
-    this.fetchGame(this.routeParams.id)
+  beforeRouteEnter (to, from, next) {
+    next(vm => vm.fetchGame(vm.routeParams.id))
   },
 
   data () {

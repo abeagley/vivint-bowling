@@ -17,7 +17,8 @@ const actions = {
 
         const existingUser = await client.query({
           query: UserSvc.checkForExistingUser,
-          variables: { nickname }
+          variables: { nickname },
+          fetchPolicy: 'network-only'
         }).then((resp) => resp.data.user)
 
         if (existingUser !== null) {
@@ -32,7 +33,7 @@ const actions = {
         }).then((resp) => resp.data.createUser)
 
         localStorage.setItem('nickname', newUser.nickname)
-        commit('doSettingNicknameSuccess', newUser)
+        commit('doSettingNicknameSuccess', newUser.nickname)
         resolve(newUser)
       } catch (e) {
         commit('doSettingNicknameFailed', e.message)

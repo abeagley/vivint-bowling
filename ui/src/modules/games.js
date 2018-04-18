@@ -34,9 +34,7 @@ const actions = {
         commit('doFetchGames')
 
         const games = await client.query({
-          query: GameSvc.listGames
-        }, {
-          // Apollo client comes with a built in caching framework. This forces a network refresh.
+          query: GameSvc.listGames,
           fetchPolicy: 'network-only'
         }).then((resp) => resp.data.games)
 
@@ -44,6 +42,25 @@ const actions = {
         resolve(games)
       } catch (e) {
         commit('doFetchGamesError', e.message)
+        reject(new Error(e.message))
+      }
+    })
+  },
+
+  joinGame ({ commit }, data) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        commit('doJoinGame')
+
+        const game = await client.mutate({
+          mutation: GameSvc.joinGame,
+          variables: data // { nickname: String, gameId: ID! }
+        }).then((resp) => resp.data.updateGame)
+
+        commit('doJoinGameSuccess')
+        resolve(game)
+      } catch (e) {
+        commit('doJoinGameError', e.message)
         reject(new Error(e.message))
       }
     })
@@ -82,6 +99,24 @@ const mutations = {
   doFetchGamesSuccess (state, games) {
     state.loading = false
     state.data = games
+  },
+
+  doJoinGame (state) {
+    state.joining = true
+    state.error = null
+  },
+
+  doJoinGameError (state, error) {
+    state.joining = false
+    state.error = error
+  },
+
+  doJoinGameSuccess (state, games) {
+    state.joining = false
+  },
+
+  updateGameInList (state, game) {
+    state.data = state.data.map((exGame) => (exGame.id === game.id) ? game : exGame)
   }
 }
 
