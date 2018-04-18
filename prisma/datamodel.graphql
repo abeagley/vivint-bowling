@@ -1,15 +1,19 @@
 type Game {
   createdAt: DateTime!
   id: ID! @unique
-  scoreSheets: [ScoreSheet!]! @relation(name: "ScoreSheetsForGame")
+  scoreSheets: [ScoreSheet!]! @relation(name: "ScoreSheetsForGame", onDelete: CASCADE)
   updatedAt: DateTime!
   users: [User!]! @relation(name: "GamesForUsers")
 }
 
+# This is more to show off the awesomeness of graphql. I would do something different in an actual production database.
 type Score {
   createdAt: DateTime!
   id: ID! @unique
-  pins: [Int!]!
+  attemptOne: Int
+  attemptTwo: Int
+  finalAttempt: Int
+  round: Int!
   scoreSheets: [ScoreSheet!]! @relation(name: "ScoresForScoreSheets")
   updatedAt: DateTime!
 }
@@ -18,7 +22,7 @@ type ScoreSheet {
   createdAt: DateTime!
   game: Game! @relation(name: "ScoreSheetsForGame")
   id: ID! @unique
-  scores: [Score!]! @relation(name: "ScoresForScoreSheets")
+  scores: [Score!]! @relation(name: "ScoresForScoreSheets", onDelete: CASCADE)
   updatedAt: DateTime!
   user: User! @relation(name: "ScoreSheetsForUser")
 }
